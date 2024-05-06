@@ -1,0 +1,52 @@
+﻿@page "/list"
+
+<div class="flex-column mt3">
+    <div class="f5 mb2">
+        List
+    </div>
+    @if (allAudioList != null)
+    {
+        @foreach (KeyValuePair<string, string> entry in allAudioList)
+        {
+            <div class="f5 mb2">
+                @entry.Key
+
+                <audio controls src="@File.ReadAllText(entry.Value)">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    private SortedDictionary<string, string>? allAudioList;
+
+    protected override async Task OnInitializedAsync()
+    {
+        allAudioList = GetAllAudioList();
+    }
+
+    private SortedDictionary<string, string> GetAllAudioList()
+    {
+        string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+        directoryPath = Path.Combine(directoryPath, @"\recvoicer");
+        Directory.CreateDirectory(directoryPath);
+
+        Dictionary<string, string> audioList = new Dictionary<string, string> { };
+
+        string[] filesName = Directory.GetFiles(directoryPath);
+
+        foreach (string filePath in filesName)
+        {
+            audioList.Add(Path.GetFileNameWithoutExtension(filePath), filePath);
+        }
+
+        return new SortedDictionary<string, string>(audioList);
+    }
+
+    public string GetAudio(string filePath)
+    {
+        return File.ReadAllText(filePath);
+    }
+}

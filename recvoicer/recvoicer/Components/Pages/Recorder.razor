@@ -16,14 +16,11 @@
             <button @onclick="StopRecording"> Stop</button>
         }
     </div>
-    <audio controls src="@AudioSource">
-        Your browser does not support the audio element.
-    </audio>
 </div>
-
 @code {
     private Stream recordedAudioStream;
     private string AudioSource { get; set; }
+
     public async void StartRecording()
     {
         if (await Permissions.RequestAsync<Permissions.Microphone>() != PermissionStatus.Granted)
@@ -33,7 +30,6 @@
         else
         {
             await AudioService.StartRecordingAsync();
-
         }
 
     }
@@ -46,9 +42,19 @@
         await recordedAudioStream.ReadAsync(audioBytes, 0, (int)recordedAudioStream.Length);
         var base64String = Convert.ToBase64String(audioBytes);
 
+        SaveAudio($"data:audio/mpeg;base64,{base64String}");
 
-        AudioSource = $"data:audio/mpeg;base64,{base64String}";
         StateHasChanged();
+    }
 
+    private void SaveAudio(string audio, string name = "new")
+    {
+        string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+        directoryPath = Path.Combine(directoryPath, @"\recvoicer");
+        Directory.CreateDirectory(directoryPath);
+
+        string filePath = Path.Combine(directoryPath, $"{DateTime.Now.ToString()} - {name}.txt");
+
+        File.WriteAllText(filePath, audio);
     }
 }
