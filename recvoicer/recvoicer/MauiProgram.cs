@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Plugin.Maui.Audio;
+using recvoicer.Services;
 
 namespace recvoicer
 {
@@ -16,8 +18,12 @@ namespace recvoicer
 
             builder.Services.AddMauiBlazorWebView();
 
+            builder.Services.AddSingleton<AudioService>();
+
+            builder.Services.AddSingleton(AudioManager.Current);
+
 #if DEBUG
-    		builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Services.AddBlazorWebViewDeveloperTools();
     		builder.Logging.AddDebug();
 #endif
 
