@@ -1,6 +1,9 @@
 ﻿@page "/";
 
 @inject AudioService AudioService;
+@inject IJSRuntime JSRuntime;
+
+<link href="~/css/recorder.css" rel="stylesheet" />
 
 <div class="flex-column mt3">
     <div class="f5 mb2">
@@ -16,10 +19,20 @@
             <button @onclick="StopRecording"> Stop</button>
         }
     </div>
+    @if(ShowDialog){
+        <div id="dialogBox">
+            <span>Enter the name of recording</span>
+            <input @bind="RecordingName" placeholder="name" type="text" name="name"/>
+            <button @onclick="ConfirmRecording">SAVE</button>
+        </div>
+    }
 </div>
+
 @code {
     private Stream recordedAudioStream;
     private string AudioSource { get; set; }
+    private string RecordingName { get; set; } = "";
+    private bool ShowDialog { get; set; } = false;
 
     public async void StartRecording()
     {
@@ -37,24 +50,31 @@
     {
         recordedAudioStream = await AudioService.StopRecordingAsync();
 
+        ShowDialog = true;
+    }
+
+    public async void ConfirmRecording()
+    {
+        ShowDialog = false;
 
         var audioBytes = new byte[recordedAudioStream.Length];
         await recordedAudioStream.ReadAsync(audioBytes, 0, (int)recordedAudioStream.Length);
         var base64String = Convert.ToBase64String(audioBytes);
 
-        SaveAudio($"data:audio/mpeg;base64,{base64String}");
 
-        StateHasChanged();
+        SaveRecording($"data:audio/mpeg;base64,{base64String}");
     }
 
-    private void SaveAudio(string audio, string name = "new")
+    private void SaveRecording(string audio)
     {
         string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
         directoryPath = Path.Combine(directoryPath, @"\recvoicer");
         Directory.CreateDirectory(directoryPath);
 
-        string filePath = Path.Combine(directoryPath, $"{DateTime.Now.ToString()} - {name}.txt");
+        string filePath = Path.Combine(directoryPath, $"{DateTime.Now.ToString()} - {RecordingName}.txt");
 
         File.WriteAllText(filePath, audio);
+
+        RecordingName = "";
     }
 }
