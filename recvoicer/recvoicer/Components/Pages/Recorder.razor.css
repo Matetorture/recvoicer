@@ -31,3 +31,37 @@
     color: white;
     padding: 3px 10px;
 }
+
+.recordingButton {
+    width: 50dvw;
+    height: 50dvw;
+    border-radius: 50%;
+    position: fixed;
+    top: 40dvh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.recordingButton span {
+    position: absolute;
+    display: block;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10dvw;
+    color: #d3d3d3;
+}
+#startRecording {
+    background: rgba(119,0,0,1);
+}
+#stopRecording {
+    background: rgba(119,0,0,.5);
+    border: 2px solid black;
+}
+#timer {
+    font-size: 10dvw;
+    position: fixed;
+    bottom: 30dvh;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: red;
+}

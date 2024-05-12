@@ -12,12 +12,13 @@
     <div class="f5 mb2">
         @if (!AudioService.IsRecording)
         {
-            <button @onclick="StartRecording"> Start</button>
+            <div id="startRecording" class="recordingButton" @onclick="StartRecording"><span>START</span></div>
         }
         else
         {
-            <button @onclick="StopRecording"> Stop</button>
+            <div id="stopRecording" class="recordingButton" @onclick="StopRecording"><span>STOP</span></div>
         }
+        <div id="timer">00:00:00.00</div>
     </div>
     @if(ShowDialog){
         <div id="dialogBox">
@@ -27,6 +28,37 @@
         </div>
     }
 </div>
+
+<script>
+    document.querySelector("#startRecording").addEventListener("click", () => {
+        const timer = document.querySelector('#timer');
+        timer.innerText = "00:00:00.00";
+
+        let ms = 0;
+        let s = 0;
+        let min = 0;
+        let h = 0;
+
+        const timerInterval = setInterval(() => {
+            ms++;
+
+            if (ms == 100) {
+                ms = 0;
+                s++;
+            }
+            if (s == 60) {
+                s = 0;
+                min++;
+            }
+            if (min == 60) {
+                min = 0;
+                h++;
+            }
+
+            timer.innerText = `${h >= 10 ? h : "0" + h}:${min >= 10 ? min : "0" + min}:${s >= 10 ? s : "0" + s}.${ms >= 10 ? ms : "0" + ms}`;
+        }, 10);
+    });
+</script>
 
 @code {
     private Stream recordedAudioStream;
