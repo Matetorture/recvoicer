@@ -7,9 +7,6 @@
 
 <div class="flex-column mt3">
     <div class="f5 mb2">
-        Record an audio
-    </div>
-    <div class="f5 mb2">
         @if (!AudioService.IsRecording)
         {
             <div id="startRecording" class="recordingButton" @onclick="StartRecording"><span>START</span></div>
