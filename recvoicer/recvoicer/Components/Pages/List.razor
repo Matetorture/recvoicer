@@ -13,8 +13,8 @@
                 <div hidden class="full-name">@entry.Key</div>
                 <div hidden class="file-name">@entry.Value</div>
                 <div class="more-info" style="display: none;">
-                    @if (@RecordingStr!=""){
-                        @RecordingStr
+                    @if (@RecordingStr != ""){
+                        <span class="date">@entry.Key.Substring(0, 19)</span>
                         <audio controls src="@File.ReadAllText(RecordingStr)">Your browser does not support the audio element.</audio>
                     }
                 </div>
