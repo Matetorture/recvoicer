@@ -58,6 +58,11 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Remove="Components\Pages\List.razor.css" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Components\Pages\List.razor.css" />
       <Content Include="Services\AudioService.cs" />
     </ItemGroup>
 

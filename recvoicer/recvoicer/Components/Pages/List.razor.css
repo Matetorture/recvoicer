@@ -1,0 +1,18 @@
+﻿#list-header
+{
+    font-size: 9dvw;
+    text-align: center;
+    padding: 3dvh;
+}
+.recording{
+    position: relative;
+    background: red;
+    margin: 10px;
+    padding: 10px;
+    font-size: 20px;
+}
+.recording .more {
+    background: blue;
+    position: absolute;
+    right: 5px;
+}

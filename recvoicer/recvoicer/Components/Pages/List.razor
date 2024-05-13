@@ -1,26 +1,35 @@
 ﻿@page "/list"
 
 <div class="flex-column mt3">
-    <div class="f5 mb2">
-        List
+    <div class="f5 mb2" id="list-header">
+        RECORDING LIST
     </div>
     @if (allAudioList != null)
     {
         @foreach (KeyValuePair<string, string> entry in allAudioList)
         {
-            <div class="f5 mb2">
-                @entry.Key
-
-                <audio controls src="@File.ReadAllText(entry.Value)">
-                    Your browser does not support the audio element.
-                </audio>
+            <div class="f5 mb2 recording">
+                @entry.Key.Substring(21)<span class="more" @onclick="() => GetRecording(entry.Value)">▼</span>
+                <div hidden class="full-name">@entry.Key</div>
+                <div hidden class="file-name">@entry.Value</div>
+                <div class="more-info" style="display: none;">
+                    @if (@RecordingStr!=""){
+                        @RecordingStr
+                        <audio controls src="@File.ReadAllText(RecordingStr)">Your browser does not support the audio element.</audio>
+                    }
+                </div>
             </div>
         }
+    }
+    else
+    {
+        <div>no recordings yet</div>
     }
 </div>
 
 @code {
     private SortedDictionary<string, string>? allAudioList;
+    private string RecordingStr { get; set; } = ""; 
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,8 +54,40 @@
         return new SortedDictionary<string, string>(audioList);
     }
 
-    public string GetAudio(string filePath)
+    public async void GetRecording(string filePath)
     {
-        return File.ReadAllText(filePath);
+        RecordingStr = filePath;
+        StateHasChanged();
     }
 }
+
+<script>
+
+    const recordings = document.querySelectorAll(".recording");
+
+    recordings.forEach((e) => {
+        e.isOpen = false;
+        e.addEventListener("click", () => {
+            const moreInfo = e.querySelector(" .more-info");
+            if (!e.isOpen) {
+                const fullName = e.querySelector(".full-name").textContent;
+                const fileName = e.querySelector(".file-name").textContent;
+
+                recordings.forEach((e) => {
+                    e.querySelector(" .more-info").style.display = "none";
+                    e.querySelector(".more").innerHTML = "▼";
+                    e.isOpen = false;
+                });
+
+                e.querySelector(".more").innerHTML = "▲";
+
+                moreInfo.style.display = "block";
+            } else {
+                e.querySelector(".more").innerHTML = "▼";
+
+                moreInfo.style.display = "none";
+            }
+            e.isOpen = !e.isOpen;
+        });
+    });
+</script>
