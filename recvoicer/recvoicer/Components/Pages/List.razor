@@ -27,6 +27,36 @@
     }
 </div>
 
+<script>
+    recordings = document.querySelectorAll(".recording");
+
+    recordings.forEach((e) => {
+        e.isOpen = false;
+        e.addEventListener("click", () => {
+            const moreInfo = e.querySelector(" .more-info");
+            if (!e.isOpen) {
+                const fullName = e.querySelector(".full-name").textContent;
+                const fileName = e.querySelector(".file-name").textContent;
+
+                recordings.forEach((e) => {
+                    e.querySelector(" .more-info").style.display = "none";
+                    e.querySelector(".more").innerHTML = "▼";
+                    e.isOpen = false;
+                });
+
+                e.querySelector(".more").innerHTML = "▲";
+
+                moreInfo.style.display = "block";
+            } else {
+                e.querySelector(".more").innerHTML = "▼";
+
+                moreInfo.style.display = "none";
+            }
+            e.isOpen = !e.isOpen;
+        });
+    });
+</script>
+
 @code {
     private SortedDictionary<string, string> allAudioList = null;
     private string RecordingStr { get; set; } = ""; 
@@ -66,34 +96,3 @@
         StateHasChanged();
     }
 }
-
-<script>
-
-    const recordings = document.querySelectorAll(".recording");
-
-    recordings.forEach((e) => {
-        e.isOpen = false;
-        e.addEventListener("click", () => {
-            const moreInfo = e.querySelector(" .more-info");
-            if (!e.isOpen) {
-                const fullName = e.querySelector(".full-name").textContent;
-                const fileName = e.querySelector(".file-name").textContent;
-
-                recordings.forEach((e) => {
-                    e.querySelector(" .more-info").style.display = "none";
-                    e.querySelector(".more").innerHTML = "▼";
-                    e.isOpen = false;
-                });
-
-                e.querySelector(".more").innerHTML = "▲";
-
-                moreInfo.style.display = "block";
-            } else {
-                e.querySelector(".more").innerHTML = "▼";
-
-                moreInfo.style.display = "none";
-            }
-            e.isOpen = !e.isOpen;
-        });
-    });
-</script>
