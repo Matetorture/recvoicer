@@ -70,9 +70,9 @@
 
 @code {
     private Stream recordedAudioStream;
-    private string AudioSource { get; set; }
-    private string RecordingName { get; set; } = "";
-    private bool IsDialogOpen { get; set; } = false;
+    private string AudioSource;
+    private string RecordingName = "";
+    private bool IsDialogOpen = false;
 
     public async void StartRecording()
     {
@@ -124,6 +124,8 @@
         File.WriteAllText(filePath, audio);
 
         RecordingName = "";
+
+        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
     }
 
     private void CancelRecording()
