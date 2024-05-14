@@ -1,5 +1,7 @@
 ﻿@page "/list"
 
+@inject NavigationManager uriHelper;
+
 <div class="flex-column mt3">
     <div class="f5 mb2" id="list-header">
         RECORDING LIST
@@ -11,9 +13,10 @@
             <div class="f5 mb2 recording">
                 @entry.Key.Substring(21)<span class="more" @onclick="() => GetRecording(entry.Value)">▼</span>
                 <div class="more-info" style="display: none;">
-                    @if (@RecordingStr != ""){
+                    @if (@RecordingStr != "")
+                    {
                         <span class="date">@entry.Key.Substring(0, 19)</span>
-                        <span class="edit" @onclick="OpenEdit">✎</span>
+                        <span class="edit" @onclick="() => OpenEdit(entry.Value)">✎</span>
                         <span class="remove" @onclick="OpenRemove">🗑</span>
                         <audio controls src="@File.ReadAllText(RecordingStr)">Your browser does not support the audio element.</audio>
                     }
@@ -82,6 +85,7 @@
     private string RecordingStr = "";
 
     private bool IsEditDialogOpen = false;
+    private string RecordingLastPath = "";
     private string NewRecordingName = "";
 
     private bool IsRemoveDialogOpen = false;
@@ -108,9 +112,12 @@
             isEmpty = false;
         }
 
-        if(!isEmpty){
+        if (!isEmpty)
+        {
             return new SortedDictionary<string, string>(audioList);
-        }else{
+        }
+        else
+        {
             return null;
         }
     }
@@ -121,12 +128,36 @@
         StateHasChanged();
     }
 
-    private void OpenEdit(){
-        IsEditDialogOpen = true;
+    private void OpenEdit(string path)
+    {
+        if (!IsRemoveDialogOpen && !IsEditDialogOpen)
+        {
+            RecordingLastPath = path;
+            IsEditDialogOpen = true;
+        }
     }
     private void ConfirmEdit()
     {
         IsEditDialogOpen = false;
+
+        if (!(NewRecordingName == "")){
+            string currentFileName = Path.GetFileName(RecordingLastPath);
+
+            NewRecordingName = $"{currentFileName.Substring(0, 19)} - {NewRecordingName}.txt";
+
+            if (!currentFileName.Equals(NewRecordingName))
+            {
+                string directoryPath = Path.GetDirectoryName(RecordingLastPath);
+
+                string newFilePath = Path.Combine(directoryPath, NewRecordingName);
+
+                File.Move(RecordingLastPath, newFilePath);
+                NewRecordingName = RecordingLastPath + " : " + newFilePath;
+
+                uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
+            }
+            NewRecordingName = "";
+        }
     }
     private void CancelEdit()
     {
@@ -135,7 +166,10 @@
 
     private void OpenRemove()
     {
-        IsRemoveDialogOpen = true;
+        if (!IsRemoveDialogOpen && !IsEditDialogOpen)
+        {
+            IsRemoveDialogOpen = true;
+        }
     }
     private void ConfirmRemove()
     {
