@@ -17,7 +17,7 @@
                     {
                         <span class="date">@entry.Key.Substring(0, 19)</span>
                         <span class="edit" @onclick="() => OpenEdit(entry.Value)">✎</span>
-                        <span class="remove" @onclick="OpenRemove">🗑</span>
+                        <span class="remove" @onclick="() => OpenRemove(entry.Value)">🗑</span>
                         <audio controls src="@File.ReadAllText(RecordingStr)">Your browser does not support the audio element.</audio>
                     }
                 </div>
@@ -164,16 +164,19 @@
         IsEditDialogOpen = false;
     }
 
-    private void OpenRemove()
+    private void OpenRemove(string path)
     {
         if (!IsRemoveDialogOpen && !IsEditDialogOpen)
         {
+            RecordingLastPath = path;
             IsRemoveDialogOpen = true;
         }
     }
     private void ConfirmRemove()
     {
         IsRemoveDialogOpen = false;
+        File.Delete(RecordingLastPath);
+        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
     }
     private void CancelRemove()
     {
