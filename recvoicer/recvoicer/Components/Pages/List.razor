@@ -23,12 +23,12 @@
     }
     else
     {
-        <div>no recordings yet</div>
+        <div id="recordings-info">no recordings yet</div>
     }
 </div>
 
 @code {
-    private SortedDictionary<string, string>? allAudioList;
+    private SortedDictionary<string, string> allAudioList = null;
     private string RecordingStr { get; set; } = ""; 
 
     protected override async Task OnInitializedAsync()
@@ -46,12 +46,18 @@
 
         string[] filesName = Directory.GetFiles(directoryPath);
 
+        bool isEmpty = true;
         foreach (string filePath in filesName)
         {
             audioList.Add(Path.GetFileNameWithoutExtension(filePath), filePath);
+            isEmpty = false;
         }
 
-        return new SortedDictionary<string, string>(audioList);
+        if(!isEmpty){
+            return new SortedDictionary<string, string>(audioList);
+        }else{
+            return null;
+        }
     }
 
     public async void GetRecording(string filePath)

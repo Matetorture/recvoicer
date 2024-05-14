@@ -7,17 +7,19 @@
 
 <div class="flex-column mt3">
     <div class="f5 mb2">
-        @if (!AudioService.IsRecording)
-        {
-            <div id="startRecording" class="recordingButton" @onclick="StartRecording"><span>START</span></div>
-        }
-        else
-        {
-            <div id="stopRecording" class="recordingButton" @onclick="StopRecording"><span>STOP</span></div>
-        }
+            @if (!AudioService.IsRecording)
+            {
+                <div id="startRecording" class="recordingButton" @onclick="StartRecording"><span>START</span></div>
+            }
+            else
+            {
+                <div id="stopRecording" class="recordingButton" @onclick="StopRecording"><span>STOP</span></div>
+            }
         <div id="timer">00:00:00.00</div>
+        <div id="testDiv">test div</div>
     </div>
-    @if(ShowDialog){
+    @if (IsDialogOpen)
+    {
         <div id="dialogBox">
             <span>Enter the name of recording</span>
             <input @bind="RecordingName" placeholder="name" type="text" name="name"/>
@@ -26,7 +28,10 @@
     }
 </div>
 
+
 <script>
+    var timerInterval;
+
     document.querySelector("#startRecording").addEventListener("click", () => {
         const timer = document.querySelector('#timer');
         timer.innerText = "00:00:00.00";
@@ -36,7 +41,7 @@
         let min = 0;
         let h = 0;
 
-        const timerInterval = setInterval(() => {
+        timerInterval = setInterval(() => {
             ms++;
 
             if (ms == 100) {
@@ -55,36 +60,43 @@
             timer.innerText = `${h >= 10 ? h : "0" + h}:${min >= 10 ? min : "0" + min}:${s >= 10 ? s : "0" + s}.${ms >= 10 ? ms : "0" + ms}`;
         }, 10);
     });
+    function stopTimer() {
+        clearInterval(timerInterval);
+    }
 </script>
 
 @code {
     private Stream recordedAudioStream;
     private string AudioSource { get; set; }
     private string RecordingName { get; set; } = "";
-    private bool ShowDialog { get; set; } = false;
+    private bool IsDialogOpen { get; set; } = false;
 
     public async void StartRecording()
     {
-        if (await Permissions.RequestAsync<Permissions.Microphone>() != PermissionStatus.Granted)
-        {
-            // Inform user to request permission
+        if (!IsDialogOpen) {
+            if (await Permissions.RequestAsync<Permissions.Microphone>() != PermissionStatus.Granted)
+            {
+                // Inform user to request permission
+            }
+            else
+            {
+                await AudioService.StartRecordingAsync();
+            }
         }
-        else
-        {
-            await AudioService.StartRecordingAsync();
-        }
-
     }
     public async void StopRecording()
     {
+
         recordedAudioStream = await AudioService.StopRecordingAsync();
 
-        ShowDialog = true;
+        IsDialogOpen = true;
+
+        await JSRuntime.InvokeVoidAsync("stopTimer");
     }
 
     public async void ConfirmRecording()
     {
-        ShowDialog = false;
+        IsDialogOpen = false;
 
         var audioBytes = new byte[recordedAudioStream.Length];
         await recordedAudioStream.ReadAsync(audioBytes, 0, (int)recordedAudioStream.Length);
