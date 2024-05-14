@@ -40,3 +40,41 @@
     font-size: x-large;
     color: rgba(0, 0, 0, .2);
 }
+
+.dialogBox {
+    background: linear-gradient(0deg, rgba(119,0,0,.8) 0%, rgba(0,0,0,.8) 100%);
+    color: white;
+    border: #a8a8a8;
+    border-radius: 12px;
+    position: relative;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px;
+}
+.dialogBox span {
+    display: block;
+    text-align: center
+}
+.dialogBox input {
+    text-align: center;
+    margin: 10px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid #ffffff;
+    color: white;
+    outline: none;
+}
+.dialogBox button {
+    border: none;
+    background-color: rgb(255, 255, 255, 0.2);
+    color: white;
+    padding: 3px 10px;
+    margin: 5px;
+}
+.dialogBox #button-box {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+}

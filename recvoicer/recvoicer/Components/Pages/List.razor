@@ -13,8 +13,8 @@
                 <div class="more-info" style="display: none;">
                     @if (@RecordingStr != ""){
                         <span class="date">@entry.Key.Substring(0, 19)</span>
-                        <span class="remove">🗑</span>
-                        <span class="edit">✎</span>
+                        <span class="edit" @onclick="OpenEdit">✎</span>
+                        <span class="remove" @onclick="OpenRemove">🗑</span>
                         <audio controls src="@File.ReadAllText(RecordingStr)">Your browser does not support the audio element.</audio>
                     }
                 </div>
@@ -24,6 +24,29 @@
     else
     {
         <div id="recordings-info">no recordings yet</div>
+    }
+
+    @if (IsEditDialogOpen)
+    {
+        <div class="dialogBox">
+            <span>Edit the name of recording</span>
+            <input @bind="NewRecordingName" placeholder="name" type="text" name="name" autofocus />
+            <span id="button-box">
+                <button @onclick="ConfirmEdit">SAVE</button>
+                <button @onclick="CancelEdit" style="color: rgba(0, 0, 0, .6)">CANCEL</button>
+            </span>
+        </div>
+    }
+
+    @if (IsRemoveDialogOpen)
+    {
+        <div class="dialogBox">
+            <span>Remove the recording</span>
+            <span id="button-box">
+                <button @onclick="ConfirmRemove">CONFIRM</button>
+                <button @onclick="CancelRemove" style="color: rgba(0, 0, 0, .6)">CANCEL</button>
+            </span>
+        </div>
     }
 </div>
 
@@ -58,6 +81,11 @@
     private SortedDictionary<string, string> allAudioList = null;
     private string RecordingStr = "";
 
+    private bool IsEditDialogOpen = false;
+    private string NewRecordingName = "";
+
+    private bool IsRemoveDialogOpen = false;
+
     protected override async Task OnInitializedAsync()
     {
         allAudioList = GetAllAudioList();
@@ -91,5 +119,30 @@
     {
         RecordingStr = filePath;
         StateHasChanged();
+    }
+
+    private void OpenEdit(){
+        IsEditDialogOpen = true;
+    }
+    private void ConfirmEdit()
+    {
+        IsEditDialogOpen = false;
+    }
+    private void CancelEdit()
+    {
+        IsEditDialogOpen = false;
+    }
+
+    private void OpenRemove()
+    {
+        IsRemoveDialogOpen = true;
+    }
+    private void ConfirmRemove()
+    {
+        IsRemoveDialogOpen = false;
+    }
+    private void CancelRemove()
+    {
+        IsRemoveDialogOpen = false;
     }
 }

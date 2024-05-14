@@ -107,6 +107,8 @@
 
 
         SaveRecording($"data:audio/mpeg;base64,{base64String}");
+
+        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
     }
 
     private void SaveRecording(string audio)
@@ -124,8 +126,6 @@
         File.WriteAllText(filePath, audio);
 
         RecordingName = "";
-
-        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
     }
 
     private void CancelRecording()
