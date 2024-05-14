@@ -10,11 +10,11 @@
         {
             <div class="f5 mb2 recording">
                 @entry.Key.Substring(21)<span class="more" @onclick="() => GetRecording(entry.Value)">▼</span>
-                <div hidden class="full-name">@entry.Key</div>
-                <div hidden class="file-name">@entry.Value</div>
                 <div class="more-info" style="display: none;">
                     @if (@RecordingStr != ""){
                         <span class="date">@entry.Key.Substring(0, 19)</span>
+                        <span class="remove">🗑</span>
+                        <span class="edit">✎</span>
                         <audio controls src="@File.ReadAllText(RecordingStr)">Your browser does not support the audio element.</audio>
                     }
                 </div>
@@ -35,9 +35,6 @@
         e.addEventListener("click", () => {
             const moreInfo = e.querySelector(" .more-info");
             if (!e.isOpen) {
-                const fullName = e.querySelector(".full-name").textContent;
-                const fileName = e.querySelector(".file-name").textContent;
-
                 recordings.forEach((e) => {
                     e.querySelector(" .more-info").style.display = "none";
                     e.querySelector(".more").innerHTML = "▼";
