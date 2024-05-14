@@ -2,6 +2,7 @@
 
 @inject AudioService AudioService;
 @inject IJSRuntime JSRuntime;
+@inject NavigationManager uriHelper;
 
 <link href="~/css/recorder.css" rel="stylesheet" />
 
@@ -21,8 +22,11 @@
     {
         <div id="dialogBox">
             <span>Enter the name of recording</span>
-            <input @bind="RecordingName" placeholder="name" type="text" name="name"/>
-            <button @onclick="ConfirmRecording">SAVE</button>
+            <input @bind="RecordingName" placeholder="name" type="text" name="name" autofocus />
+            <span id="button-box">
+                <button @onclick="ConfirmRecording">SAVE</button>
+                <button @onclick="CancelRecording" style="color: rgba(0, 0, 0, .6)">CANCEL</button>
+            </span>
         </div>
     }
 </div>
@@ -120,5 +124,10 @@
         File.WriteAllText(filePath, audio);
 
         RecordingName = "";
+    }
+
+    private void CancelRecording()
+    {
+        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
     }
 }
