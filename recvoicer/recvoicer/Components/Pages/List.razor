@@ -15,10 +15,17 @@
                 <div class="more-info" style="display: none;">
                     @if (@RecordingStr != "")
                     {
-                        <span class="date">@entry.Key.Substring(0, 19)</span>
-                        <span class="edit" @onclick="() => OpenEdit(entry.Value)">✎</span>
-                        <span class="remove" @onclick="() => OpenRemove(entry.Value)">🗑</span>
-                        <audio controls src="@File.ReadAllText(RecordingStr)">Your browser does not support the audio element.</audio>
+                        @if (@IsAudioLoaded)
+                        {
+                            <span class="date">@entry.Key.Substring(0, 19)</span>
+                            <span class="edit" @onclick="() => OpenEdit(entry.Value)">✎</span>
+                            <span class="remove" @onclick="() => OpenRemove(entry.Value)">🗑</span>
+                            <audio controls src="@LoadAudio()">Your browser does not support the audio element.</audio>
+                        }
+                        else
+                        {
+                            <span style="opacity: .3; text-align: center; display: block; margin: 30px;">Loading...</span>
+                        }
                     }
                 </div>
             </div>
@@ -90,6 +97,8 @@
 
     private bool IsRemoveDialogOpen = false;
 
+    private bool IsAudioLoaded = false;
+
     protected override async Task OnInitializedAsync()
     {
         allAudioList = GetAllAudioList();
@@ -124,8 +133,15 @@
 
     public async void GetRecording(string filePath)
     {
-        RecordingStr = filePath;
+        RecordingStr = " ";
+        IsAudioLoaded = false;
+        RecordingStr = await File.ReadAllTextAsync(filePath);
+        IsAudioLoaded = true;
         StateHasChanged();
+    }
+    public string LoadAudio()
+    {
+        return RecordingStr;
     }
 
     private void OpenEdit(string path)
