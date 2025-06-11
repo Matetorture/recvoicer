@@ -133,6 +133,7 @@
 
     public async void GetRecording(string filePath)
     {
+		Console.WriteLine("Loading audio from: " + filePath);
         RecordingStr = " ";
         IsAudioLoaded = false;
         RecordingStr = await File.ReadAllTextAsync(filePath);
