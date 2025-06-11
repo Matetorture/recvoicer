@@ -63,19 +63,16 @@
 
 ## Usage
 
-### Main Screens
+### Navigation
+<img src="README-img/r4.jpg" alt="Navigation menu" width="200"/>
 
 - **Recorder:** Record new audio and save it.
 - **List:** View, play, edit, or remove existing recordings.
-
-### Navigation
-<img src="README-img/r4.jpg" alt="Navigation menu" width="200"/>
 
 ### Use Cases
 
 #### 1. Record Audio
 
----
 <img src="README-img/r1.jpg" alt="Recorder screen" width="200"/>
 
 - Navigate to the Recorder page.
@@ -89,7 +86,7 @@
 - After stopping, enter a name and save.
 
 #### 2. List Recordings
----
+
 <img src="README-img/r5.jpg" alt="Recordings list" width="200"/>
 
 - View all saved recordings.
